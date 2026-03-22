@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoencoder for Dimensionality Reduction | World Happiness Poster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            padding: 24px;
+        }
+
+        .poster {
+            width: 794px;
+            min-height: 1123px;
+            background: white;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.25);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            padding: 32px 36px 40px 36px;
+            flex: 1;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 24px;
+            border-bottom: 3px solid #2c3e8f;
+            padding-bottom: 16px;
+        }
+        .main-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #2c3e8f;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        .byline {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 6px;
+        }
+
+        .two-columns {
+            display: flex;
+            gap: 28px;
+            margin: 20px 0 18px 0;
+        }
+        .col {
+            flex: 1;
+        }
+
+        .card {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2edff;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f2b6d;
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+            margin-bottom: 14px;
+        }
+        .card-text {
+            font-size: 13px;
+            line-height: 1.45;
+            color: #1e293b;
+            text-align: justify;
+        }
+        .metric-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .metric-badge {
+            background: #e0f2fe;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        .fig {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 10px;
+            margin: 12px 0;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+        }
+        .fig-placeholder {
+            background: #e6edf5;
+            border-radius: 12px;
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 500;
+            flex-direction: column;
+        }
+        .fig-caption {
+            font-size: 10px;
+            color: #475569;
+            margin-top: 6px;
+            font-style: italic;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 14px;
+            margin: 12px 0;
+        }
+        .stat-box {
+            flex: 1;
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+        }
+        .stat-number {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1e40af;
+        }
+
+        hr {
+            margin: 12px 0;
+            border: 0;
+            height: 1px;
+            background: #cbd5e1;
+        }
+
+        .conclusion {
+            background: #eef2ff;
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-top: 16px;
+            border-left: 5px solid #2563eb;
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 10px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+            margin-top: 8px;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .poster {
+                box-shadow: none;
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="poster">
+    <div class="content">
+        <!-- Title Section -->
+        <div class="title-section">
+            <div class="main-title">🌍 Autoencoder for Nonlinear Dimensionality Reduction</div>
+            <div class="subtitle">From 6D Socioeconomic Indicators to 2D Latent Space · World Happiness Report 2023</div>
+            <div class="byline">Unsupervised Learning | Clustering Analysis | Optimization Strategies</div>
+        </div>
+
+        <div class="two-columns">
+            <!-- Left Column -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-title">🧠 What is Dimensionality Reduction?</div>
+                    <div class="card-text">
+                        Dimensionality reduction compresses high-dimensional data into lower dimensions for <strong>visualization, interpretation, and computational efficiency</strong>. An <strong>autoencoder</strong> is a neural network that learns nonlinear structures through an <strong>encoder → latent space → decoder</strong> pipeline, preserving essential information while discarding noise.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📊 Dataset: World Happiness Report 2023</div>
+                    <div class="card-text">
+                        Contains <strong>150+ countries</strong> with <strong>6 key indicators</strong>: GDP per capita, social support, healthy life expectancy, freedom to make life choices, generosity, and perception of corruption. Data was standardized and fed into an autoencoder to reduce dimensionality to 2D.
+                    </div>
+                    <div class="metric-list">
+                        <span class="metric-badge">GDP per capita</span>
+                        <span class="metric-badge">Social support</span>
+                        <span class="metric-badge">Health expectancy</span>
+                        <span class="metric-badge">Freedom</span>
+                        <span class="metric-badge">Generosity</span>
+                        <span class="metric-badge">Corruption perception</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">⚙️ Optimizer Comparison</div>
+                    <div class="card-text">
+                        <strong>RMSprop</strong> significantly outperformed SGD and Adam in convergence speed and latent space clarity. It achieved the lowest reconstruction error with stable training dynamics.
+                    </div>
+                    <div class="fig">
+                        <div class="fig-placeholder" style="height: 110px;">
+                            📉 [ Figure 2: Optimizer Comparison ]<br>
+                            Replace with: media/image2.png
+                        </div>
+                        <div class="fig-caption">▲ Figure 2: Training loss curves for SGD, RMSprop, and Adam. RMSprop shows fastest convergence.</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🎯 Learning Rate Tuning</div>
+                    <div class="card-text">
+                        A learning rate of <strong>0.01</strong> achieved the best balance: rapid convergence without oscillation or divergence.
+                    </div>
+                    <div class="fig">
+                        <div class="fig-placeholder" style="height: 100px;">
+                            📈 [ Figure 1: Learning Rate Comparison ]<br>
+                            Replace with: media/image1.png
+                        </div>
+                        <div class="fig-caption">▲ Figure 1: Loss curves for different learning rates. lr=0.01 yields optimal performance.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col">
+                <div class="card">
+                    <div class="card-title">📉 Training Loss Curve</div>
+                    <div class="fig">
+                        <div class="fig-placeholder" style="height: 110px;">
+                            📊 [ Figure 3: Training Loss Curve ]<br>
+                            Replace with: media/image3.png
+                        </div>
+                        <div class="fig-caption">▲ Figure 3: Loss decreases rapidly then converges smoothly (lr=0.01, RMSprop).</div>
+                    </div>
+                    <div class="card-text" style="margin-top: 8px;">
+                        The loss drops sharply in early epochs and stabilizes without oscillations, confirming optimal hyperparameter selection.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🗺️ 2D Latent Space: Country Clustering</div>
+                    <div class="fig">
+                        <div class="fig-placeholder" style="height: 130px;">
+                            🌐 [ Figures 4 & 5: Latent Space Visualization ]<br>
+                            Replace with: media/image4.png and media/image5.png
+                        </div>
+                        <div class="fig-caption">▲ Figures 4 & 5: 2D representation of countries. Nordic countries cluster tightly in the bottom-right.</div>
+                    </div>
+                    <div class="card-text">
+                        <strong>Latent Dimension 1</strong> correlates positively with happiness, while <strong>Latent Dimension 2</strong> shows negative correlation. High-happiness countries form distinct clusters, demonstrating the autoencoder's ability to capture nonlinear manifold structures.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🔍 Feature Contribution & Correlation</div>
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-number">-0.142</div>
+                            <div style="font-size: 11px;">Correlation between latent dims</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">GDP + Social Support</div>
+                            <div style="font-size: 11px;">Primary drivers</div>
+                        </div>
+                    </div>
+                    <div class="fig">
+                        <div class="fig-placeholder" style="height: 100px;">
+                            📊 [ Figure 7: Feature Contribution ]<br>
+                            Replace with: media/image7.png
+                        </div>
+                        <div class="fig-caption">▲ Figure 7: GDP and freedom contribute most to latent dimensions.</div>
+                    </div>
+                    <div class="fig">
+                        <div class="fig-placeholder" style="height: 100px;">
+                            🔥 [ Figure 9: Correlation Heatmap ]<br>
+                            Replace with: media/image9.png
+                        </div>
+                        <div class="fig-caption">▲ Figure 9: All original features positively correlate with Latent Dim 1, negatively with Latent Dim 2.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latent Distribution Section -->
+        <div class="card" style="margin-bottom: 12px;">
+            <div class="card-title">📐 Latent Space Distribution & Interpretability</div>
+            <div class="card-text">
+                • Latent dimensions approximate <strong>normal distributions</strong> (Dim1 ~ N(-0.61, 0.54), Dim2 ~ N(-2.58, 1.83)), indicating well-decoupled representations.<br>
+                • <strong>Economic indicators</strong> (GDP, social support) dominate Latent Dim 1, while <strong>soft indicators</strong> (freedom, corruption perception) are captured by Latent Dim 2.<br>
+                • The autoencoder automatically assigns higher weight to high-variance, discriminative features, preserving interpretability after compression.
+            </div>
+            <div class="fig">
+                <div class="fig-placeholder" style="height: 100px;">
+                    📊 [ Figure 8: Latent Dimensions Distribution ]<br>
+                    Replace with: media/image8.png
+                </div>
+                <div class="fig-caption">▲ Figure 8: Histograms of latent dimensions showing near-normal distribution patterns.</div>
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="conclusion">
+            <div style="font-weight: 800; font-size: 16px; margin-bottom: 8px;">✅ Conclusion: Autoencoders for Nonlinear Dimensionality Reduction</div>
+            <div class="card-text" style="color: #0f172a;">
+                With <strong>RMSprop optimizer and learning rate 0.01</strong>, the autoencoder successfully compressed 6D happiness indicators into a 2D latent space, revealing clear <strong>country clusters, feature interaction patterns, and interpretable low-dimensional representations</strong>. Compared to linear methods, autoencoders flexibly capture nonlinear manifolds, providing a powerful framework for exploratory data analysis in social sciences and beyond.
+            </div>
+        </div>
+        
+        <div class="footer-note">
+            🧪 Experiment based on World Happiness Report 2023 | Architecture: Fully-connected autoencoder | Metrics: MSE reconstruction error + clustering quality
+        </div>
+    </div>
+</div>
+</body>
+</html>
